@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from "react";
+import {Modal} from 'react-bootstrap'
 import "./style.css";
 
 export const MainDashboardFrame = () => {
 
   const [headlines, setHeadlines] = useState([])
   const [isheadlinesloading, setisheadlinesloading] = useState(false)
+  const [abouttooltip, setAboutToolTip] = useState("Virland Financials is a finance research and analysis tool.  It provides data intelligence gathered from different financial sources in order for traders and investors to make intelligent decisions on where to invest.")
 
   
   //Get headlines
@@ -31,20 +33,20 @@ export const MainDashboardFrame = () => {
   return (
     <div className="main-dashboard-frame">
       <div className="div">
-        <div className="text-wrapper">About</div>
+        <div className="text-wrapper"  title={abouttooltip}>About</div>
         <div className="text-wrapper-2">Virland Fiinancials</div>
         <div className="main-menu">
-          <div className="text-wrapper-3">Crypto</div>
-          <div className="text-wrapper-4">Forex</div>
+          <div className="text-wrapper-3" title="Crypto Currency Page"><a href="">Crypto</a></div>
+          <div className="text-wrapper-4" title="Commodity Page"><a href="">Forex</a></div>
           <div className="overlap-group">
-            <div className="text-wrapper-5">Fixed Income</div>
-            <div className="text-wrapper-6">Funds</div>
+            <div className="text-wrapper-5" title="Fixed Income Page"><a href="">Fixed Income</a></div>
+            <div className="text-wrapper-6" title="Mutual Funds Page"><a href="">Funds</a></div>
           </div>
-          <div className="text-wrapper-7">Futures</div>
+          <div className="text-wrapper-7" title="Futures Commodity Page"><a href="">Futures</a></div>
         </div>
         <div className="news-headline-frame">
           <div className="text-wrapper-8">HEADLINES AND BREAKING NEWS</div>
-          <div className="group" >
+          <div className="group">
               <ul className="headlines-list" style={{listStyleType: 'none', display: 'flex', flexWrap: 'wrap'}}>
               {
                 
