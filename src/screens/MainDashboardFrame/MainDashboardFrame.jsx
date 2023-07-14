@@ -1,39 +1,89 @@
-import React from "react";
+import React, { useMemo, useState } from "react";
 import "./style.css";
 
 export const MainDashboardFrame = () => {
+
+  const [headlines, setHeadlines] = useState([])
+  const [isheadlinesloading, setisheadlinesloading] = useState(false)
+
+  
+  //Get headlines
+  useMemo(() => {
+    fetch('http://localhost:5000/news-headlines')
+    .then(res => res.json())
+    .then((data) => {
+        let count = 0
+       setisheadlinesloading(true)
+       data.articles.forEach(article => {
+        if (count === 10) {
+          setisheadlinesloading(false)
+          return;
+        }
+        //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
+        setHeadlines(headlines => [...headlines, {title:article.title, url:article.url, urlimage: article.urlToImage}])
+        count += 1;
+       })
+    })
+    .catch(console.log)
+  },[])
+
   return (
     <div className="main-dashboard-frame">
-      <div className="overlap-wrapper">
-        <div className="overlap">
+      <div className="div">
+        <div className="text-wrapper">About</div>
+        <div className="text-wrapper-2">Virland Fiinancials</div>
+        <div className="main-menu">
+          <div className="text-wrapper-3">Crypto</div>
+          <div className="text-wrapper-4">Forex</div>
           <div className="overlap-group">
-            <div className="rectangle" />
-            <div className="text-wrapper">Stocks</div>
-            <div className="navbar">
-              <div className="div">Crypto</div>
-              <div className="text-wrapper-2">Forex</div>
-              <div className="text-wrapper-3">Fixed Income</div>
-              <div className="text-wrapper-4">Funds</div>
-              <div className="text-wrapper-5">Futures</div>
-            </div>
-            <div className="symbols-view">
-              <div className="text-wrapper-6">IBM: $200</div>
-              <div className="text-wrapper-7">MSFT: $150</div>
-              <div className="text-wrapper-8">AMZN: $175</div>
-            </div>
-            <div className="news-headline-frame">
-              <div className="text-wrapper-9">HEADLINES AND BREAKING NEWS</div>
-            </div>
+            <div className="text-wrapper-5">Fixed Income</div>
+            <div className="text-wrapper-6">Funds</div>
           </div>
-          <div className="frame">
-            <div className="text-wrapper-10">Favorite Watch List</div>
-            <div className="group">
-              <div className="text-wrapper-11">USDCAD $1.73</div>
-              <div className="text-wrapper-12">EURUSD $1.20</div>
-            </div>
+          <div className="text-wrapper-7">Futures</div>
+        </div>
+        <div className="news-headline-frame">
+          <div className="text-wrapper-8">HEADLINES AND BREAKING NEWS</div>
+          <div className="group" >
+              <ul className="headlines-list" style={{listStyleType: 'none', display: 'flex', flexWrap: 'wrap'}}>
+              {
+                
+                headlines.map(headline => (
+                  <li key={headline.title} style={{marginLeft: '1rem'}}><p>{headline.title}</p></li>
+                ))
+                
+              }
+              </ul>
           </div>
+        </div>
+        <div className="favorites">
+          <div className="text-wrapper-11">Favorites</div>
+          <div className="forex-group">
+            <div className="text-wrapper-12">USDCAD</div>
+            <div className="text-wrapper-13">EURUSD</div>
+          </div>
+          <div className="coin-group">
+            <div className="text-wrapper-14">BTCUSD</div>
+            <div className="text-wrapper-15">ETHUSD</div>
+            <div className="text-wrapper-16">BTCUSDC</div>
+            <div className="text-wrapper-17">ETHUSDC</div>
+          </div>
+          <div className="stocks-group">
+            <div className="text-wrapper-18">IBM</div>
+            <div className="text-wrapper-19">APPL</div>
+            <div className="text-wrapper-20">AMZN</div>
+          </div>
+        </div>
+        <img
+          className="VIRLAN-CHAINWORKS-YT"
+          alt="Virlan CHAINWORKS YT"
+          src="/img/virlan-chainworks-yt-branding-1.png"
+        />
+        <div className="frame">
+          <div className="text-wrapper-21">Symbol Detail</div>
+          <img className="candle" alt="Candle" src="/img/candle-1.png" />
         </div>
       </div>
     </div>
   );
 };
+
