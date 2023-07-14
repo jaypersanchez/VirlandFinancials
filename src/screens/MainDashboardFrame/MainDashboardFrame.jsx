@@ -13,6 +13,10 @@ export const MainDashboardFrame = () => {
   const [cryptocoin, setcryptocoin] = useState([])
   const [selectedcrypto, setselectedcrypto] = useState()
   const [iscryptocoinloading, setiscryptocoinloading] = useState(false)
+  const [tickersymbol, settickersymbol] = useState([])
+  const [istickersymbolloading, setistickersymbolloading] = useState(false)
+  const [selectedtickersymbol, setselectedtickersymbol] = useState()
+
   
   //Get headlines
   useMemo(() => {
@@ -67,6 +71,22 @@ export const MainDashboardFrame = () => {
     .catch(console.log)
   },[])
 
+  //Get Ticker Symbols
+  useMemo(() => {
+    fetch('http://localhost:5000/default/stocks')
+    .then(res => res.json())
+    .then((data) => {
+        setistickersymbolloading(true)
+       data.forEach(pair => {
+        console.log(pair)
+        //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
+        settickersymbol(tickersymbol => [...tickersymbol, pair])
+       })
+       setistickersymbolloading(false)
+    })
+    .catch(console.log)
+  },[])
+
   const handleSelectedForexPair = async(e) => {
     let selected = e.target.value;
     setselectedforexpair(selected)
@@ -76,7 +96,13 @@ export const MainDashboardFrame = () => {
   const handleSelectedCrypto = async(e) => {
     let selected = e.target.value;
     setselectedcrypto(selected)
-    console.log(`Forex Pair Selected ${selectedcrypto}`)
+    console.log(`Crypto Selected ${selectedcrypto}`)
+  }
+
+  const handleSelectedTickerSymbol = async(e) => {
+    let selected = e.target.value;
+    setselectedtickersymbol(selected)
+    console.log(`Ticker Selected ${selectedtickersymbol}`)
   }
 
   return (
@@ -111,6 +137,7 @@ export const MainDashboardFrame = () => {
         <div className="favorites">
           <div className="text-wrapper-11">Favorites</div>
           <div className="forex-group">
+            <div>Commodities</div>
           <select onChange={(e) => handleSelectedForexPair(e)}>
             {
               forexpairs.map((pair, index) => (
@@ -120,6 +147,7 @@ export const MainDashboardFrame = () => {
           </select>
           </div>
           <div className="coin-group">
+            <div>Stablecoins</div>
             <select onChange={(e) => handleSelectedCrypto(e)}>
               {
                 cryptocoin.map((pair, index) => (
@@ -129,9 +157,14 @@ export const MainDashboardFrame = () => {
             </select>
           </div>
           <div className="stocks-group">
-            <div className="text-wrapper-18">IBM</div>
-            <div className="text-wrapper-19">APPL</div>
-            <div className="text-wrapper-20">AMZN</div>
+            <div>Equities</div>
+            <select onChange={(e) => handleSelectedTickerSymbol(e)}>
+              {
+                tickersymbol.map((pair, index) => (
+                  <option key={index}>{pair}</option>
+                ))
+              }
+            </select>
           </div>
         </div>
         <img
