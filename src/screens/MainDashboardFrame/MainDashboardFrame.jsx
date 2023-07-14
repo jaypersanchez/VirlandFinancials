@@ -7,7 +7,8 @@ export const MainDashboardFrame = () => {
   const [headlines, setHeadlines] = useState([])
   const [isheadlinesloading, setisheadlinesloading] = useState(false)
   const [abouttooltip, setAboutToolTip] = useState("Virland Financials is a finance research and analysis tool.  It provides data intelligence gathered from different financial sources in order for traders and investors to make intelligent decisions on where to invest.")
-
+  const [forexpairs, setForexPairs] = useState([])
+  const [isforexpairsloading, setisforexpairsloading] = useState(false)
   
   //Get headlines
   useMemo(() => {
@@ -26,6 +27,22 @@ export const MainDashboardFrame = () => {
         setHeadlines(headlines => [...headlines, {title:article.title, url:article.url, urlimage: article.urlToImage}])
         count += 1;
        })
+    })
+    .catch(console.log)
+  },[])
+
+  //Get Forex pairs
+  useMemo(() => {
+    fetch('http://localhost:5000/default/forex')
+    .then(res => res.json())
+    .then((data) => {
+        setisforexpairsloading(true)
+       data.forEach(pair => {
+        console.log(pair)
+        //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
+        setForexPairs(forexpairs => [...forexpairs, pair])
+       })
+       setisforexpairsloading(false)
     })
     .catch(console.log)
   },[])
@@ -53,7 +70,6 @@ export const MainDashboardFrame = () => {
                 headlines.map((headline,i) => (
                   <li key={headline.title} style={{marginLeft: '1rem', backgroundColor: i % 2 === 0 ? '#AED6F1' : '#5DADE2'}}>
                     <p><a href={headline.url} target="_blank">{headline.title}</a></p></li>
-                    
                 ))
                 
               }
@@ -63,8 +79,13 @@ export const MainDashboardFrame = () => {
         <div className="favorites">
           <div className="text-wrapper-11">Favorites</div>
           <div className="forex-group">
-            <div className="text-wrapper-12">USDCAD</div>
-            <div className="text-wrapper-13">EURUSD</div>
+          <select>
+            {
+              forexpairs.map((pair, index) => (
+                <option key={index}>{pair}</option>
+              ))
+            }
+          </select>
           </div>
           <div className="coin-group">
             <div className="text-wrapper-14">BTCUSD</div>
