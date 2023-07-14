@@ -9,6 +9,10 @@ export const MainDashboardFrame = () => {
   const [abouttooltip, setAboutToolTip] = useState("Virland Financials is a finance research and analysis tool.  It provides data intelligence gathered from different financial sources in order for traders and investors to make intelligent decisions on where to invest.")
   const [forexpairs, setForexPairs] = useState([])
   const [isforexpairsloading, setisforexpairsloading] = useState(false)
+  const [selectedforexpair, setselectedforexpair] = useState()
+  const [cryptocoin, setcryptocoin] = useState([])
+  const [selectedcrypto, setselectedcrypto] = useState()
+  const [iscryptocoinloading, setiscryptocoinloading] = useState(false)
   
   //Get headlines
   useMemo(() => {
@@ -47,6 +51,34 @@ export const MainDashboardFrame = () => {
     .catch(console.log)
   },[])
 
+  //Get Crypto list
+  useMemo(() => {
+    fetch('http://localhost:5000/default/crypto')
+    .then(res => res.json())
+    .then((data) => {
+        setiscryptocoinloading(true)
+       data.forEach(pair => {
+        console.log(pair)
+        //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
+        setcryptocoin(cryptocoin => [...cryptocoin, pair])
+       })
+       setiscryptocoinloading(false)
+    })
+    .catch(console.log)
+  },[])
+
+  const handleSelectedForexPair = async(e) => {
+    let selected = e.target.value;
+    setselectedforexpair(selected)
+    console.log(`Forex Pair Selected ${selectedforexpair}`)
+  }
+ 
+  const handleSelectedCrypto = async(e) => {
+    let selected = e.target.value;
+    setselectedcrypto(selected)
+    console.log(`Forex Pair Selected ${selectedcrypto}`)
+  }
+
   return (
     <div className="main-dashboard-frame">
       <div className="div">
@@ -79,7 +111,7 @@ export const MainDashboardFrame = () => {
         <div className="favorites">
           <div className="text-wrapper-11">Favorites</div>
           <div className="forex-group">
-          <select>
+          <select onChange={(e) => handleSelectedForexPair(e)}>
             {
               forexpairs.map((pair, index) => (
                 <option key={index}>{pair}</option>
@@ -88,10 +120,13 @@ export const MainDashboardFrame = () => {
           </select>
           </div>
           <div className="coin-group">
-            <div className="text-wrapper-14">BTCUSD</div>
-            <div className="text-wrapper-15">ETHUSD</div>
-            <div className="text-wrapper-16">BTCUSDC</div>
-            <div className="text-wrapper-17">ETHUSDC</div>
+            <select onChange={(e) => handleSelectedCrypto(e)}>
+              {
+                cryptocoin.map((pair, index) => (
+                  <option key={index}>{pair}</option>
+                ))
+              }
+            </select>
           </div>
           <div className="stocks-group">
             <div className="text-wrapper-18">IBM</div>
