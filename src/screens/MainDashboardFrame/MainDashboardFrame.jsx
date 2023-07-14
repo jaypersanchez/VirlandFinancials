@@ -9,17 +9,18 @@ export const MainDashboardFrame = () => {
   
   //Get headlines
   useMemo(() => {
+    //Intl.DateTimeFormat().resolvedOptions().timeZone //to get country so news headline will be based on country
     fetch('http://localhost:5000/news-headlines')
     .then(res => res.json())
     .then((data) => {
         let count = 0
        setisheadlinesloading(true)
        data.articles.forEach(article => {
-        if (count === 10) {
+        if (count === 15) {
           setisheadlinesloading(false)
           return;
         }
-        //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
+        console.log(`${article.title}::${article.url}::${article.urlToImage}`)
         setHeadlines(headlines => [...headlines, {title:article.title, url:article.url, urlimage: article.urlToImage}])
         count += 1;
        })
@@ -47,8 +48,10 @@ export const MainDashboardFrame = () => {
               <ul className="headlines-list" style={{listStyleType: 'none', display: 'flex', flexWrap: 'wrap'}}>
               {
                 
-                headlines.map(headline => (
-                  <li key={headline.title} style={{marginLeft: '1rem'}}><p>{headline.title}</p></li>
+                headlines.map((headline,i) => (
+                  <li key={headline.title} style={{marginLeft: '1rem', backgroundColor: i % 2 === 0 ? '#AED6F1' : '#5DADE2'}}>
+                    <p><a href={headline.url} target="_blank">{headline.title}</a></p></li>
+                    
                 ))
                 
               }
