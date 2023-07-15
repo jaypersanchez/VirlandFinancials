@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import {Modal} from 'react-bootstrap'
 import "./style.css";
+import { dotenv } from 'react-dotenv'
 
 export const MainDashboardFrame = () => {
 
@@ -31,7 +32,7 @@ export const MainDashboardFrame = () => {
           setisheadlinesloading(false)
           return;
         }
-        console.log(`${article.title}::${article.url}::${article.urlToImage}`)
+        //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
         setHeadlines(headlines => [...headlines, {title:article.title, url:article.url, urlimage: article.urlToImage}])
         count += 1;
        })
@@ -46,7 +47,7 @@ export const MainDashboardFrame = () => {
     .then((data) => {
         setisforexpairsloading(true)
        data.forEach(pair => {
-        console.log(pair)
+        //console.log(pair)
         //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
         setForexPairs(forexpairs => [...forexpairs, pair])
        })
@@ -57,15 +58,17 @@ export const MainDashboardFrame = () => {
 
   //Get Crypto list
   useMemo(() => {
-    fetch('http://localhost:5000/default/crypto')
+    const ninjasapikey = process.env.NINJAS_API_KEY
+    console.log("ninjaapi " + ninjasapikey)
+    fetch('https://api.api-ninjas.com/v1/cryptosymbols', {
+      headers : {
+          'X-Api-Key': ninjasapikey
+      }
+    })
     .then(res => res.json())
     .then((data) => {
-        setiscryptocoinloading(true)
-       data.forEach(pair => {
-        console.log(pair)
-        //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
-        setcryptocoin(cryptocoin => [...cryptocoin, pair])
-       })
+       setiscryptocoinloading(true)
+       print(data)
        setiscryptocoinloading(false)
     })
     .catch(console.log)
@@ -78,7 +81,7 @@ export const MainDashboardFrame = () => {
     .then((data) => {
         setistickersymbolloading(true)
        data.forEach(pair => {
-        console.log(pair)
+        //console.log(pair)
         //console.log(`${article.title}::${article.url}::${article.urlToImage}`)
         settickersymbol(tickersymbol => [...tickersymbol, pair])
        })
