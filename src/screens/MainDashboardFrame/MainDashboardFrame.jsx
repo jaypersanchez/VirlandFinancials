@@ -17,7 +17,8 @@ export const MainDashboardFrame = () => {
   const [tickersymbol, settickersymbol] = useState([])
   const [istickersymbolloading, setistickersymbolloading] = useState(false)
   const [selectedtickersymbol, setselectedtickersymbol] = useState()
-
+  const [pairpriceprice, setpairprice] = useState()
+  const [pairpricesymbol, setpairpricesymbol] = useState()
   
   //Get headlines
   useMemo(() => {
@@ -65,10 +66,14 @@ export const MainDashboardFrame = () => {
           'X-Api-Key': ninjasapikey
       }
     })
-    .then(res => res.json())
+    .then(res=>res.json())
     .then((data) => {
        setiscryptocoinloading(true)
-       print(data)
+       
+       data.symbols.map(symbolpair => {
+          //console.log(symbolpair)
+          setcryptocoin(cryptocoin => [...cryptocoin, symbolpair])
+       })
        setiscryptocoinloading(false)
     })
     .catch(console.log)
@@ -100,6 +105,14 @@ export const MainDashboardFrame = () => {
     let selected = e.target.value;
     setselectedcrypto(selected)
     console.log(`Crypto Selected ${selectedcrypto}`)
+    fetch(`http://127.0.0.1:5000/crypto/pair?symbol=${selected}`)
+    .then(res => res.json())
+    .then(pairprice => {
+      console.log(`${pairprice.symbol}::${pairprice.price}`)
+      setpairprice(pairprice.price)
+      setpairpricesymbol(pairprice.symbol)
+    })
+    .catch(console.log())
   }
 
   const handleSelectedTickerSymbol = async(e) => {
@@ -176,7 +189,7 @@ export const MainDashboardFrame = () => {
           src="/img/virlan-chainworks-yt-branding-1.png"
         />
         <div className="frame">
-          <div className="text-wrapper-21">Symbol Detail</div>
+          <div className="text-wrapper-21"><p>{pairpricesymbol}: {pairpriceprice}</p></div>
           <img className="candle" alt="Candle" src="/img/candle-1.png" />
         </div>
       </div>
