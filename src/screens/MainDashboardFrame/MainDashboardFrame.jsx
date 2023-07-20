@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import {Modal} from 'react-bootstrap'
 import "./style.css";
 import { dotenv } from 'react-dotenv'
+import {Bar} from 'react-chartjs-2';
 
 export const MainDashboardFrame = () => {
 
@@ -19,6 +20,7 @@ export const MainDashboardFrame = () => {
   const [selectedtickersymbol, setselectedtickersymbol] = useState()
   const [pairpriceprice, setpairprice] = useState()
   const [pairpricesymbol, setpairpricesymbol] = useState()
+  const [cryptochart, setcryptochart] = useState()
   
   //Get headlines
   useMemo(() => {
@@ -101,6 +103,38 @@ export const MainDashboardFrame = () => {
     console.log(`Forex Pair Selected ${selectedforexpair}`)
   }
  
+  const graphCryptoSymbol = async() => {
+    fetch(`http://localhost:5000/crypto/graph?symbol=btc`)
+    .then(res => res.json())
+    .then((chart_df) => {
+          //console.log(chart_df)
+              //Create a chart object
+              var chart = new Chart(ctx, {
+                type: 'line',
+                data: chart_df, 
+                options: {
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            display: true,
+                            min: chart_df.labels[0],
+                            max: chart_df.labels[chart_df.length - 1],
+                        }],
+                        yAxes: [{
+                            ticks: {
+                                suggestedMin: chart_df.min,
+                                suggestedMax: chart_df.max
+                            } 
+                        }]
+                    }
+                }
+              });
+              //Render the chart
+              chart.render();
+              setcryptochart(chart)
+    })
+  }
+
   const handleSelectedCrypto = async(e) => {
     let selected = e.target.value;
     setselectedcrypto(selected)
@@ -111,7 +145,11 @@ export const MainDashboardFrame = () => {
       console.log(`${pairprice.symbol}::${pairprice.price}`)
       setpairprice(pairprice.price)
       setpairpricesymbol(pairprice.symbol)
+
     })
+    .then( 
+      graphCryptoSymbol()
+  )
     .catch(console.log())
   }
 
@@ -190,7 +228,10 @@ export const MainDashboardFrame = () => {
         />
         <div className="frame">
           <div className="text-wrapper-21"><p>{pairpricesymbol}: {pairpriceprice}</p></div>
-          <img className="candle" alt="Candle" src="/img/candle-1.png" />
+          
+          <div>
+            <canvas ref={cryptochart} />
+          </div>
         </div>
       </div>
     </div>
