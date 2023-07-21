@@ -47,6 +47,25 @@ You can build your storybook for release with:
 npm run build-storybook
 ```
 
+to get country code
+
+def get_user_country(ip_address):
+    url = f"https://ipinfo.io/{ip_address}/country"
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            country = response.text.strip()
+            return country
+        else:
+            return "Unknown"
+    except requests.RequestException:
+        return "Unknown"
+
+# Example usage:
+user_ip = "203.0.113.42"  # Replace with the actual user's IP address
+user_country = get_user_country(user_ip)
+print("User's country:", user_country)
+
 Country Abbebriation
 
 can you give me a list of the world's country by abbreviate and country name?  For example PH,Philippines
