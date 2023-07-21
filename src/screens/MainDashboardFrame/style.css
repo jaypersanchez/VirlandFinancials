@@ -375,6 +375,32 @@
   width: 175px;
 }
 
+.main-dashboard-frame .text-wrapper-22 {
+  color: #000000;
+  font-family: "Inter", Helvetica;
+  font-size: 14px;
+  font-weight: 400;
+  left: 350px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 70px;
+  width: 175px;
+}
+
+.main-dashboard-frame .text-wrapper-23 {
+  color: #000000;
+  font-family: "Inter", Helvetica;
+  font-size: 14px;
+  font-weight: 400;
+  left: 357px;
+  letter-spacing: 0;
+  line-height: normal;
+  position: absolute;
+  top: 125px;
+  width: 175px;
+}
+
 .main-dashboard-frame .candle {
   height: 382px;
   left: 0;

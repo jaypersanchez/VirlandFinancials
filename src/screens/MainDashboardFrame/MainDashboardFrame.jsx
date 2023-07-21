@@ -21,7 +21,27 @@ export const MainDashboardFrame = () => {
   const [pairpriceprice, setpairprice] = useState()
   const [pairpricesymbol, setpairpricesymbol] = useState()
   const [cryptochart, setcryptochart] = useState()
+  const [country, setcountry] = useState()
+  const [commodityprice, setcommodityprice] = useState()
+  const [stockquoteprice, setstockquoteprice] = useState()
   
+  //get user's geolocation
+  useMemo(() => {
+    fetch('http://localhost:1234/')
+    .then(res => res.headers.get('User-Agent'))
+    .then(userAgent => {
+      // Parse user-agent to get country
+      if (userAgent) {
+        const countryRegex = /\(([^)]+)\)/;
+        const matches = userAgent.match(countryRegex);
+        const country = matches && matches[1];
+        // Do something with the country
+        console.log(`country ${country}`)
+        setcountry(country)
+      }
+    });
+  })
+
   //Get headlines
   useMemo(() => {
     //Intl.DateTimeFormat().resolvedOptions().timeZone //to get country so news headline will be based on country
@@ -98,9 +118,18 @@ export const MainDashboardFrame = () => {
   },[])
 
   const handleSelectedForexPair = async(e) => {
+    console.log("forex quote")
     let selected = e.target.value;
     setselectedforexpair(selected)
     console.log(`Forex Pair Selected ${selectedforexpair}`)
+    fetch(`http://127.0.0.1:5000/forex/quote?symbol=${selectedforexpair}`)
+    .then(res => res.json())
+    .then(pairprice => {
+      let date = pairprice[0]["0"];
+      let price = pairprice[1]["0"];
+      console.log(`The date is ${date} and the price is ${price}`)
+      setcommodityprice(`${selectedforexpair} price to date ${date}: ${price}`)
+    })
   }
  
   const graphCryptoSymbol = async() => {
@@ -147,9 +176,9 @@ export const MainDashboardFrame = () => {
       setpairpricesymbol(pairprice.symbol)
 
     })
-    .then( 
+    /*.then( 
       graphCryptoSymbol()
-  )
+  )*/
     .catch(console.log())
   }
 
@@ -157,6 +186,12 @@ export const MainDashboardFrame = () => {
     let selected = e.target.value;
     setselectedtickersymbol(selected)
     console.log(`Ticker Selected ${selectedtickersymbol}`)
+    fetch(`http://127.0.0.1:5000/stocks/stockeodquote?symbol=${selectedtickersymbol}`)
+    .then(res => res.json())
+    .then(pairprice => {
+      console.log(pairprice)
+      setstockquoteprice(pairprice)
+    })
   }
 
   return (
@@ -227,7 +262,9 @@ export const MainDashboardFrame = () => {
           src="/img/virlan-chainworks-yt-branding-1.png"
         />
         <div className="frame">
-          <div className="text-wrapper-21"><p>{pairpricesymbol}: {pairpriceprice}</p></div>
+          <div className="text-wrapper-21"><p>{pairpricesymbol} :: {pairpriceprice}</p></div>
+          <div className="text-wrapper-22"><p>{commodityprice}</p></div>
+          <div className="text-wrapper-23"><p>{selectedtickersymbol} Stock Price {stockquoteprice}</p></div>
           
           <div>
             <canvas ref={cryptochart} />
